@@ -635,6 +635,8 @@ int setup_steal_socket(struct steal_pty_state *steal) {
     if (mkdtemp(steal->tmpdir) == NULL)
         return errno;
 
+    chmod(steal->tmpdir, 0755);
+
     steal->addr_un.sun_family = AF_UNIX;
     snprintf(steal->addr_un.sun_path, sizeof(steal->addr_un.sun_path),
              "%s/reptyr.sock", steal->tmpdir);
@@ -644,6 +646,8 @@ int setup_steal_socket(struct steal_pty_state *steal) {
 
     if (bind(steal->sockfd, &steal->addr, sizeof(steal->addr_un)) < 0)
         return errno;
+
+    chmod(steal->addr_un.sun_path, 0666);
 
     return 0;
 }
